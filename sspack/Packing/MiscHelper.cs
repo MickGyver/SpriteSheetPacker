@@ -25,6 +25,7 @@
 #endregion
 
 using System.IO;
+using System.Collections.Generic;
 
 namespace sspack
 {
@@ -57,5 +58,44 @@ namespace sspack
 				k = k | k >> i;
 			return k + 1;
 		}
-	}
+
+    // determines if a directory contains an image we can accept
+    public static bool DirectoryContainsImages(string directory)
+    {
+      foreach (var file in Directory.GetFiles(directory, "*", SearchOption.AllDirectories))
+      {
+        if (IsImageFile(file))
+        {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    // Add image files 
+    public static void AddFiles(IEnumerable<string> paths, List<string> files)
+    {
+      foreach (var path in paths)
+      {
+        // if the path is a directory, add all files inside the directory
+        if (Directory.Exists(path))
+        {
+          AddFiles(Directory.GetFiles(path, "*", SearchOption.AllDirectories), files);
+          continue;
+        }
+
+        // make sure the file is an image
+        if (!IsImageFile(path))
+          continue;
+
+        // prevent duplicates
+        if (files.Contains(path))
+          continue;
+
+        // add to the file list
+        files.Add(path);
+      }
+    }
+  }
 }

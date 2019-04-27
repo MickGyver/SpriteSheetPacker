@@ -58,7 +58,7 @@ namespace sspack
 		public bool sqr = false;
 
     [Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Removes '_stripXX' from filenames.")]
-    public bool rem = false;
+    public bool remstrip = false;
 
     [Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Searches subdirectories of any input directories.")]
 		public bool r = false;
@@ -66,7 +66,7 @@ namespace sspack
 		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Path to file listing the images to build.")]
 		public string il;
 
-		[DefaultArgument(ArgumentType.Multiple, HelpText = "Images to pack.")]
+    [DefaultArgument(ArgumentType.Multiple, HelpText = "Images (or folders) to pack.")]
 		public string[] input;
 
 		private ProgramArguments() { }

@@ -79,6 +79,8 @@ namespace SpriteSheetPacker
       this.squareCheckBox = new System.Windows.Forms.CheckBox();
       this.generateMapCheckBox = new System.Windows.Forms.CheckBox();
       this.chkRemoveStrip = new System.Windows.Forms.CheckBox();
+      this.btnSaveBatch = new System.Windows.Forms.Button();
+      this.batchSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
       this.SuspendLayout();
       // 
       // listBox1
@@ -126,10 +128,10 @@ namespace SpriteSheetPacker
       // buildBtn
       // 
       this.buildBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-      this.buildBtn.Location = new System.Drawing.Point(356, 311);
+      this.buildBtn.Location = new System.Drawing.Point(355, 316);
       this.buildBtn.Margin = new System.Windows.Forms.Padding(2);
       this.buildBtn.Name = "buildBtn";
-      this.buildBtn.Size = new System.Drawing.Size(171, 41);
+      this.buildBtn.Size = new System.Drawing.Size(173, 41);
       this.buildBtn.TabIndex = 12;
       this.buildBtn.Text = "Build Sprite Sheet";
       this.buildBtn.UseVisualStyleBackColor = true;
@@ -348,20 +350,35 @@ namespace SpriteSheetPacker
       // 
       // chkRemoveStrip
       // 
-      this.chkRemoveStrip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.chkRemoveStrip.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
       this.chkRemoveStrip.AutoSize = true;
-      this.chkRemoveStrip.Location = new System.Drawing.Point(5, 341);
+      this.chkRemoveStrip.Location = new System.Drawing.Point(7, 341);
       this.chkRemoveStrip.Name = "chkRemoveStrip";
-      this.chkRemoveStrip.Size = new System.Drawing.Size(184, 17);
+      this.chkRemoveStrip.Size = new System.Drawing.Size(188, 17);
       this.chkRemoveStrip.TabIndex = 14;
-      this.chkRemoveStrip.Text = "Remove \'_stripxx\' from filenames?";
+      this.chkRemoveStrip.Text = "Remove \'_stripXX\' from filenames?";
       this.chkRemoveStrip.UseVisualStyleBackColor = true;
+      // 
+      // btnSaveBatch
+      // 
+      this.btnSaveBatch.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+      this.btnSaveBatch.Enabled = false;
+      this.btnSaveBatch.Location = new System.Drawing.Point(267, 317);
+      this.btnSaveBatch.Margin = new System.Windows.Forms.Padding(2);
+      this.btnSaveBatch.Name = "btnSaveBatch";
+      this.btnSaveBatch.Size = new System.Drawing.Size(84, 41);
+      this.btnSaveBatch.TabIndex = 15;
+      this.btnSaveBatch.Text = "Save batch";
+      this.btnSaveBatch.UseVisualStyleBackColor = true;
+      this.btnSaveBatch.Visible = false;
+      this.btnSaveBatch.Click += new System.EventHandler(this.btnSaveBatch_Click);
       // 
       // SpriteSheetPackerForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(539, 363);
+      this.ClientSize = new System.Drawing.Size(539, 368);
+      this.Controls.Add(this.btnSaveBatch);
       this.Controls.Add(this.chkRemoveStrip);
       this.Controls.Add(this.generateMapCheckBox);
       this.Controls.Add(this.squareCheckBox);
@@ -420,6 +437,8 @@ namespace SpriteSheetPacker
 		private System.Windows.Forms.CheckBox squareCheckBox;
 		private System.Windows.Forms.CheckBox generateMapCheckBox;
     private System.Windows.Forms.CheckBox chkRemoveStrip;
+    private System.Windows.Forms.Button btnSaveBatch;
+    private System.Windows.Forms.SaveFileDialog batchSaveFileDialog;
   }
 }
 

@@ -115,41 +115,9 @@ namespace SpriteSheetPacker
 
     private void AddFiles(IEnumerable<string> paths)
     {
-      foreach (var path in paths)
-      {
-        // if the path is a directory, add all files inside the directory
-        if (Directory.Exists(path))
-        {
-          AddFiles(Directory.GetFiles(path, "*", SearchOption.AllDirectories));
-          continue;
-        }
-
-        // make sure the file is an image
-        if (!sspack.MiscHelper.IsImageFile(path))
-          continue;
-
-        // prevent duplicates
-        if (files.Contains(path))
-          continue;
-
-        // add to both our internal list and the list box
-        files.Add(path);
-        listBox1.Items.Add(path);
-      }
-    }
-
-    // determines if a directory contains an image we can accept
-    public static bool DirectoryContainsImages(string directory)
-    {
-      foreach (var file in Directory.GetFiles(directory, "*", SearchOption.AllDirectories))
-      {
-        if (sspack.MiscHelper.IsImageFile(file))
-        {
-          return true;
-        }
-      }
-
-      return false;
+      listBox1.Items.Clear();
+      sspack.MiscHelper.AddFiles(paths, files);
+      listBox1.Items.AddRange(files.ToArray());
     }
 
     private void listBox1_DragEnter(object sender, DragEventArgs e)
@@ -163,7 +131,7 @@ namespace SpriteSheetPacker
       foreach (var f in (string[])e.Data.GetData(DataFormats.FileDrop))
       {
         // if the path is a directory and it contains images...
-        if (Directory.Exists(f) && DirectoryContainsImages(f))
+        if (Directory.Exists(f) && sspack.MiscHelper.DirectoryContainsImages(f))
         {
           imageFound = true;
           break;
@@ -444,6 +412,11 @@ namespace SpriteSheetPacker
     private static void ShowBuildError(string error)
     {
       MessageBox.Show(error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
+
+    private void btnSaveBatch_Click(object sender, EventArgs e)
+    {
+      // TODO: Save batch file and image list
     }
   }
 }
