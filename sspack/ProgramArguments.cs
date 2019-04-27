@@ -57,7 +57,10 @@ namespace sspack
 		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Ensures output is square.")]
 		public bool sqr = false;
 
-		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Searches subdirectories of any input directories.")]
+    [Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Removes '_stripXX' from filenames.")]
+    public bool rem = false;
+
+    [Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Searches subdirectories of any input directories.")]
 		public bool r = false;
 
 		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Path to file listing the images to build.")]

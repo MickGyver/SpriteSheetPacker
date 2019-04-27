@@ -124,12 +124,16 @@ namespace sspack
 					for (int i = 0; i < images.Count; i++)
 					{
 						string str1 = Path.GetFileNameWithoutExtension(images[i]);
+            if(arguments.rem && str1.IndexOf("_strip")>0)
+              str1 = str1.Substring(0, str1.LastIndexOf("_strip"));
 
-						for (int j = i + 1; j < images.Count; j++)
+            for (int j = i + 1; j < images.Count; j++)
 						{
 							string str2 = Path.GetFileNameWithoutExtension(images[j]);
+              if (arguments.rem && str2.IndexOf("_strip") > 0)
+                str2 = str2.Substring(0, str2.LastIndexOf("_strip"));
 
-							if (str1 == str2)
+              if (str1 == str2)
 							{
 								Console.WriteLine("Two images have the same name: {0} = {1}", images[i], images[j]);
 								return (int)FailCode.ImageNameCollision;
@@ -144,7 +148,7 @@ namespace sspack
 				Dictionary<string, Rectangle> outputMap;
 
 				// pack the image, generating a map only if desired
-				int result = imagePacker.PackImage(images, arguments.pow2, arguments.sqr, arguments.mw, arguments.mh, arguments.pad, mapExporter != null, out outputImage, out outputMap);
+				int result = imagePacker.PackImage(images, arguments.pow2, arguments.sqr, arguments.rem, arguments.mw, arguments.mh, arguments.pad, mapExporter != null, out outputImage, out outputMap);
 				if (result != 0)
 				{
 					Console.WriteLine("There was an error making the image sheet.");

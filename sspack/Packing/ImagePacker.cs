@@ -34,7 +34,7 @@ namespace sspack
 	public class ImagePacker
 	{
 		// various properties of the resulting image
-		private bool requirePow2, requireSquare;
+		private bool requirePow2, requireSquare, removeStrip;
 		private int padding;
 		private int outputWidth, outputHeight;
 
@@ -45,23 +45,25 @@ namespace sspack
 		private readonly Dictionary<string, Size> imageSizes = new Dictionary<string, Size>();
 		private readonly Dictionary<string, Rectangle> imagePlacement = new Dictionary<string, Rectangle>();
 
-		/// <summary>
-		/// Packs a collection of images into a single image.
-		/// </summary>
-		/// <param name="imageFiles">The list of file paths of the images to be combined.</param>
-		/// <param name="requirePowerOfTwo">Whether or not the output image must have a power of two size.</param>
-		/// <param name="requireSquareImage">Whether or not the output image must be a square.</param>
-		/// <param name="maximumWidth">The maximum width of the output image.</param>
-		/// <param name="maximumHeight">The maximum height of the output image.</param>
-		/// <param name="imagePadding">The amount of blank space to insert in between individual images.</param>
-		/// <param name="generateMap">Whether or not to generate the map dictionary.</param>
-		/// <param name="outputImage">The resulting output image.</param>
-		/// <param name="outputMap">The resulting output map of placement rectangles for the images.</param>
-		/// <returns>0 if the packing was successful, error code otherwise.</returns>
-		public int PackImage(
+    /// <summary>
+    /// Packs a collection of images into a single image.
+    /// </summary>
+    /// <param name="imageFiles">The list of file paths of the images to be combined.</param>
+    /// <param name="requirePowerOfTwo">Whether or not the output image must have a power of two size.</param>
+    /// <param name="requireSquareImage">Whether or not the output image must be a square.</param>
+    /// <param name="removeStripFromFilename">Whether or not to remove'_stripXX' from filenames</param>
+    /// <param name="maximumWidth">The maximum width of the output image.</param>
+    /// <param name="maximumHeight">The maximum height of the output image.</param>
+    /// <param name="imagePadding">The amount of blank space to insert in between individual images.</param>
+    /// <param name="generateMap">Whether or not to generate the map dictionary.</param>
+    /// <param name="outputImage">The resulting output image.</param>
+    /// <param name="outputMap">The resulting output map of placement rectangles for the images.</param>
+    /// <returns>0 if the packing was successful, error code otherwise.</returns>
+    public int PackImage(
 			IEnumerable<string> imageFiles, 
 			bool requirePowerOfTwo, 
 			bool requireSquareImage, 
+      bool removeStripFromFilename,
 			int maximumWidth,
 			int maximumHeight,
 			int imagePadding,
@@ -72,7 +74,8 @@ namespace sspack
 			files = new List<string>(imageFiles);
 			requirePow2 = requirePowerOfTwo;
 			requireSquare = requireSquareImage;
-			outputWidth = maximumWidth;
+      removeStrip = removeStripFromFilename;
+      outputWidth = maximumWidth;
 			outputHeight = maximumHeight;
 			padding = imagePadding;
 
@@ -83,13 +86,17 @@ namespace sspack
 			imageSizes.Clear();
 			imagePlacement.Clear();
 
-			// get the sizes of all the images
-			foreach (var image in files)
+      // get the sizes of all the images
+
+      Size size;
+      foreach (var image in files)
 			{
 				Bitmap bitmap = Bitmap.FromFile(image) as Bitmap;
 				if (bitmap == null)
 					return (int)FailCode.FailedToLoadImage;
-				imageSizes.Add(image, bitmap.Size);
+        FrameDimension dimension = new FrameDimension(bitmap.FrameDimensionsList[0]);
+        size = new Size(bitmap.Size.Width * bitmap.GetFrameCount(dimension), bitmap.Size.Height);
+        imageSizes.Add(image, size);
 			}
 
 			// sort our files by file size so we place large sprites first
@@ -145,7 +152,10 @@ namespace sspack
 				outputMap = new Dictionary<string, Rectangle>();
 				foreach (var pair in imagePlacement)
 				{
-					outputMap.Add(pair.Key, pair.Value);
+          string key = pair.Key;
+          if(removeStrip && key.IndexOf("_strip") > 0)
+            key = key.Substring(0, key.LastIndexOf("_strip"));
+          outputMap.Add(key, pair.Value);
 				}
 			}
 
@@ -296,11 +306,19 @@ namespace sspack
 					if (bitmap == null)
 						return null;
 
-					// copy pixels over to avoid antialiasing or any other side effects of drawing
-					// the subimages to the output image using Graphics
-					for (int x = 0; x < bitmap.Width; x++)
-						for (int y = 0; y < bitmap.Height; y++)
-							outputImage.SetPixel(location.X + x, location.Y + y, bitmap.GetPixel(x, y));
+          // Get number of frames (animated gif)
+          FrameDimension dimension = new FrameDimension(bitmap.FrameDimensionsList[0]);
+          int frameCount = bitmap.GetFrameCount(dimension);
+
+          // copy pixels over to avoid antialiasing or any other side effects of drawing
+          // the subimages to the output image using Graphics
+          for (int frame = 0; frame < frameCount; frame++)
+          {
+            bitmap.SelectActiveFrame(dimension, frame);
+            for (int x = 0; x < bitmap.Width; x++)
+              for (int y = 0; y < bitmap.Height; y++)
+                outputImage.SetPixel(location.X + x + bitmap.Width*frame, location.Y + y, bitmap.GetPixel(x, y));
+          }
 				}
 
 				return outputImage;
