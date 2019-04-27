@@ -4,6 +4,15 @@ Sprite Sheet Packer is a fully featured tool for combining multiple individual i
 
 ![](https://github.com/nickgravelyn/spritesheetpacker/blob/master/images/ToolUI.png)
 
+## About this fork
+
+This is a fork of https://github.com/nickgravelyn/SpriteSheetPacker. This forks adds the following features:
+* Animated gif support.
+* Option to remove "\_stripXX" from filenames.
+* Input paths supplied for the console app (sspack) can also be folders.
+
+## Desription
+
 Sprite Sheet Packer supports reading PNG, JPG, BMP, and GIF images and produces a single PNG image with all the images embedded inside of it. The resulting image is transparent anywhere an image is not drawn. The tool also produces an accompanying file that maps the image file names with their rectangles, for use in your program to find the regions of the image you are interested in.
 
 The tool has a full UI including options for setting the maximum resulting image size, padding (added to the size of the individual images), as well as options for requiring a power-of-two sized output and a square output. The tool has buttons for managing the desired images and also accepts drag-and-drop of image files into the list for true ease of use.
